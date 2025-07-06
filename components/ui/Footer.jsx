@@ -1,7 +1,12 @@
-"use client"
+"use client";
 import {motion} from "framer-motion";
+import {useLanguage} from "@/context/LanguageContext";
+import {translations} from "@/lib/translation";
 
 const Footer = () => {
+ const {language} = useLanguage();
+ const t = translations[language].footer;
+
  const socialLinks = [
   {
    name: "GitHub",
@@ -62,8 +67,8 @@ const Footer = () => {
      transition={{duration: 0.6}}
      className="flex flex-col md:flex-row justify-between items-center w-full">
      <div className="mb-6 md:mb-0 w-full md:w-auto text-center md:text-left">
-      <h3 className="text-2xl font-bold text-white mb-2">John Doe</h3>
-      <p className="text-gray-400">Web Developer & UI/UX Enthusiast</p>
+      <h3 className="text-2xl font-bold text-white mb-2">Aiden Porto</h3>
+      <p className="text-gray-400">Front-End Developer</p>
      </div>
 
      <div className="flex justify-center space-x-6 mb-6 md:mb-0 w-full md:w-auto">
@@ -83,11 +88,9 @@ const Footer = () => {
 
      <div className="text-center md:text-right w-full md:w-auto">
       <p className="text-sm text-gray-500">
-       &copy; {new Date().getFullYear()} John Doe. All rights reserved.
+       &copy; {new Date().getFullYear()} Aiden Porto. {t.copyright}
       </p>
-      <p className="text-xs text-gray-600 mt-1">
-       Built with Next.js and Tailwind CSS
-      </p>
+      <p className="text-xs text-gray-600 mt-1">{t.built}</p>
      </div>
     </motion.div>
    </div>

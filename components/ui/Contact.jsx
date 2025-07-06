@@ -1,7 +1,12 @@
 "use client";
 import {motion} from "framer-motion";
+import {useLanguage} from "@/context/LanguageContext";
+import {translations} from "@/lib/translation";
 
 const Contact = () => {
+ const {language} = useLanguage();
+ const t = translations[language].contact;
+
  const container = {
   hidden: {opacity: 0},
   show: {
@@ -28,7 +33,7 @@ const Contact = () => {
      viewport={{once: true, margin: "-100px"}}
      transition={{duration: 0.6}}
      className="text-center mb-16">
-     <h2 className="text-4xl font-bold text-gray-800 mb-4">Get In Touch</h2>
+     <h2 className="text-4xl font-bold text-gray-800 mb-4">{t.title}</h2>
      <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
     </motion.div>
 
@@ -41,13 +46,8 @@ const Contact = () => {
      <motion.div
       variants={item}
       className="space-y-6">
-      <h3 className="text-2xl font-semibold text-gray-800">
-       Let's talk about your project
-      </h3>
-      <p className="text-gray-700 leading-relaxed">
-       Have a project in mind or just want to say hi? Feel free to reach out!
-       I'm always open to new opportunities and collaborations.
-      </p>
+      <h3 className="text-2xl font-semibold text-gray-800">{t.subtitle}</h3>
+      <p className="text-gray-700 leading-relaxed">{t.description}</p>
       <div className="space-y-4">
        <div className="flex items-start space-x-4">
         <div className="mt-1 text-blue-600">
@@ -65,7 +65,7 @@ const Contact = () => {
          </svg>
         </div>
         <div>
-         <h4 className="font-medium text-gray-800">Email</h4>
+         <h4 className="font-medium text-gray-800">{t.email}</h4>
          <a
           href="mailto:aidenval999@gmail.com"
           className="text-blue-600 hover:underline">
@@ -89,9 +89,9 @@ const Contact = () => {
          </svg>
         </div>
         <div>
-         <h4 className="font-medium text-gray-800">Phone</h4>
+         <h4 className="font-medium text-gray-800">{t.phone}</h4>
          <a
-          href="tel:+1234567890"
+          href="tel:+6287746156529"
           className="text-blue-600 hover:underline">
           +62 877 4615-6529
          </a>
@@ -99,7 +99,7 @@ const Contact = () => {
        </div>
       </div>
       <div className="flex space-x-4 pt-4">
-       {["LinkedIn", "GitHub", "Twitter"].map((social) => (
+       {t.social.map((social) => (
         <a
          key={social}
          href="#"
@@ -117,44 +117,52 @@ const Contact = () => {
          <label
           htmlFor="name"
           className="block text-sm font-medium text-gray-700 mb-1">
-          Your Name
+          {t.form.name}
          </label>
          <input
           type="text"
           id="name"
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-          placeholder="John Doe"
+          placeholder={language === "en" ? "John Doe" : "Nama Anda"}
          />
         </div>
         <div>
          <label
           htmlFor="email"
           className="block text-sm font-medium text-gray-700 mb-1">
-          Your Email
+          {t.form.email}
          </label>
          <input
           type="email"
           id="email"
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-          placeholder="your.email@example.com"
+          placeholder={
+           language === "en"
+            ? "your.email@example.com"
+            : "email.anda@contoh.com"
+          }
          />
         </div>
         <div>
          <label
           htmlFor="message"
           className="block text-sm font-medium text-gray-700 mb-1">
-          Your Message
+          {t.form.message}
          </label>
          <textarea
           id="message"
           rows="5"
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-          placeholder="Hello, I'd like to talk about..."></textarea>
+          placeholder={
+           language === "en"
+            ? "Hello, I'd like to talk about..."
+            : "Halo, saya ingin membahas tentang..."
+          }></textarea>
         </div>
         <button
          type="submit"
          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02]">
-         Send Message
+         {t.form.button}
         </button>
        </form>
       </div>

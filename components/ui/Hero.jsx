@@ -1,9 +1,15 @@
 "use client";
 import {useRef} from "react";
 import {motion, useScroll, useTransform} from "framer-motion";
+import {useLanguage} from "@/context/LanguageContext";
+import { translations } from "@/lib/translation";
+
 
 const Hero = () => {
  const ref = useRef(null);
+ const {language} = useLanguage();
+ const t = translations[language].hero;
+
  const {scrollYProgress} = useScroll({
   target: ref,
   offset: ["start start", "end start"],
@@ -19,10 +25,8 @@ const Hero = () => {
    id="hero"
    className="relative flex items-center justify-center h-screen bg-cover bg-center text-white overflow-hidden"
    style={{backgroundImage: 'url("/images/hero-bg.jpg")'}}>
-   {/* Enhanced overlay with gradient */}
    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
 
-   {/* Background parallax layer */}
    <motion.div
     className="absolute inset-0 bg-cover bg-center"
     style={{
@@ -32,7 +36,6 @@ const Hero = () => {
     }}
    />
 
-   {/* Content with smooth parallax */}
    <motion.div
     className="relative z-10 text-center px-4"
     style={{y: yText, opacity: opacityText}}>
@@ -40,16 +43,19 @@ const Hero = () => {
      initial={{opacity: 0, y: 20}}
      animate={{opacity: 1, y: 0}}
      transition={{duration: 0.8}}
-     className="text-5xl md:text-7xl font-bold mb-4">
-     Hello, I'm <span className="text-blue-400">Ilham</span> a.k.a{" "}
-     <span className="text-blue-400">Aiden</span>
-    </motion.h1>
+     className="text-5xl md:text-7xl font-bold mb-4"
+     dangerouslySetInnerHTML={{
+      __html: t.title
+       .replace(/<1>(.*?)<\/1>/g, '<span class="text-blue-400">$1</span>')
+       .replace(/<3>(.*?)<\/3>/g, '<span class="text-blue-400">$1</span>'),
+     }}
+    />
     <motion.p
      initial={{opacity: 0, y: 20}}
      animate={{opacity: 1, y: 0}}
      transition={{duration: 0.8, delay: 0.2}}
      className="text-xl md:text-2xl mb-8">
-     Beginner Front-End Developer
+     {t.subtitle}
     </motion.p>
     <motion.div
      initial={{opacity: 0, y: 20}}
@@ -58,18 +64,17 @@ const Hero = () => {
      <a
       href="#projects"
       className="mt-8 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 transform">
-      View My Work
+      {t.button}
      </a>
     </motion.div>
    </motion.div>
 
-   {/* Scroll indicator with animation */}
    <motion.div
     className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white text-lg flex flex-col items-center"
     initial={{opacity: 0}}
     animate={{opacity: 1}}
     transition={{delay: 1.5}}>
-    <p>Scroll down</p>
+    <p>{t.scroll}</p>
     <motion.div
      animate={{y: [0, 10, 0]}}
      transition={{repeat: Infinity, duration: 1.5}}
