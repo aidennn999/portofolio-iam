@@ -2,10 +2,21 @@
 import {motion} from "framer-motion";
 import {useLanguage} from "@/context/LanguageContext";
 import {translations} from "@/lib/translation";
+import {useState} from "react";
 
 const Contact = () => {
  const {language} = useLanguage();
  const t = translations[language].contact;
+ const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  message: "",
+ });
+ const [isSubmitting, setIsSubmitting] = useState(false);
+ const [submitStatus, setSubmitStatus] = useState({
+  success: false,
+  message: "",
+ });
 
  const container = {
   hidden: {opacity: 0},
@@ -20,6 +31,58 @@ const Contact = () => {
  const item = {
   hidden: {opacity: 0, y: 20},
   show: {opacity: 1, y: 0},
+ };
+
+ const handleChange = (e) => {
+  const {name, value} = e.target;
+  setFormData((prev) => ({
+   ...prev,
+   [name]: value,
+  }));
+ };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setSubmitStatus({success: false, message: ""});
+
+  try {
+   const response = await fetch("https://formspree.io/f/mvgrnvqz", {
+    method: "POST",
+    headers: {
+     "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+     name: formData.name,
+     email: formData.email,
+     message: formData.message,
+     _language: language, // Tambahkan bahasa saat ini
+    }),
+   });
+
+   if (response.ok) {
+    setSubmitStatus({
+     success: true,
+     message:
+      language === "en"
+       ? "Message sent successfully!"
+       : "Pesan berhasil dikirim!",
+    });
+    setFormData({name: "", email: "", message: ""});
+   } else {
+    throw new Error("Failed to send message");
+   }
+  } catch (error) {
+   setSubmitStatus({
+    success: false,
+    message:
+     language === "en"
+      ? "Failed to send message. Please try again later."
+      : "Gagal mengirim pesan. Silakan coba lagi nanti.",
+   });
+  } finally {
+   setIsSubmitting(false);
+  }
  };
 
  return (
@@ -112,7 +175,9 @@ const Contact = () => {
 
      <motion.div variants={item}>
       <div className="bg-white rounded-xl shadow-lg p-8">
-       <form className="space-y-6">
+       <form
+        className="space-y-6"
+        onSubmit={handleSubmit}>
         <div>
          <label
           htmlFor="name"
@@ -122,8 +187,12 @@ const Contact = () => {
          <input
           type="text"
           id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
           placeholder={language === "en" ? "John Doe" : "Nama Anda"}
+          required
          />
         </div>
         <div>
@@ -135,12 +204,16 @@ const Contact = () => {
          <input
           type="email"
           id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
           placeholder={
            language === "en"
             ? "your.email@example.com"
             : "email.anda@contoh.com"
           }
+          required
          />
         </div>
         <div>
@@ -151,18 +224,39 @@ const Contact = () => {
          </label>
          <textarea
           id="message"
+          name="message"
           rows="5"
+          value={formData.message}
+          onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
           placeholder={
            language === "en"
             ? "Hello, I'd like to talk about..."
             : "Halo, saya ingin membahas tentang..."
-          }></textarea>
+          }
+          required></textarea>
         </div>
+        {submitStatus.message && (
+         <div
+          className={`p-3 rounded-lg ${
+           submitStatus.success
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800"
+          }`}>
+          {submitStatus.message}
+         </div>
+        )}
         <button
          type="submit"
-         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02]">
-         {t.form.button}
+         disabled={isSubmitting}
+         className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02] ${
+          isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+         }`}>
+         {isSubmitting
+          ? language === "en"
+            ? "Sending..."
+            : "Mengirim..."
+          : t.form.button}
         </button>
        </form>
       </div>
